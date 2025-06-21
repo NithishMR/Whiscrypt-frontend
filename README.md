@@ -1,12 +1,33 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🧭 Whiscrypt Frontend
 
-Currently, two official plugins are available:
+The frontend of Whiscrypt enables users to anonymously submit encrypted whistleblower reports, interact with an AI assistant chatbot, and provides an admin dashboard for managing reports.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚧 Project Status
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**This frontend is under active development.**  
+UI and core functionality are partially built, with more features planned.
+
+---
+
+## 📦 Planned Features
+
+- 📋 Secure report submission form 
+- 🧠 AI chatbot interface (UI complete, integration in progress)
+- 🕵️ Admin dashboard to view and filter reports (in progress)
+- 🔐 Secure login for admins (planned)
+- 🌙 Dark mode toggle (under progress)
+- 📁 Encrypted file upload support (planned)
+- 📊 Report activity visualization (future)
+
+---
+
+## 🛠️ Tech Stack
+
+- **React.js** 
+- **Tailwind CSS** + **Daisy UI**
+-  **Redux**
+---
+
