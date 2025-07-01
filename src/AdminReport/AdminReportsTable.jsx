@@ -48,7 +48,7 @@ const AdminReportsTable = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch("/api/admin/reports");
+        const res = await fetch("http://localhost:5000/api/admin/reports");
         const data = await res.json();
         setReports(data); // You would replace the dummy data here
       } catch (err) {

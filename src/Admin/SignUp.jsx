@@ -1,5 +1,7 @@
+import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // ✅ correct
+
 import { Toaster, toast } from "sonner";
 
 export default function SignUp() {
@@ -9,11 +11,17 @@ export default function SignUp() {
 
   const handleSubmission = async (e) => {
     e.preventDefault(); // Prevent form reload
+    console.log(userName);
+    console.log(password);
+    console.log(userEmail);
+    if (!userName || !userEmail || !password) {
+      return toast.error("All fields are required!");
+    }
 
     await toast.promise(
-      axios.post("/api/adminSignUp", {
+      axios.post("http://localhost:5000/api/admin/register", {
         username: userName,
-        emailID: userEmail,
+        email: userEmail,
         password: password,
       }),
       {

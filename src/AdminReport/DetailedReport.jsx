@@ -10,7 +10,9 @@ const DetailedReport = () => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const res = await fetch(`/api/admin/reports/${id}`);
+        const res = await fetch(
+          `http://localhost:5000/api/admin/reports/${id}`
+        );
         const data = await res.json();
         setReport(data);
         setIsLoading(false);
@@ -40,12 +42,14 @@ const DetailedReport = () => {
   } = report;
 
   // Here we assume that the backend is handling decryption. If needed, you can decrypt content in frontend, but it's better done in the backend for security.
-  const decryptedContent = encryptedContent; // Simulating the decrypted content here.
+  // Simulating the decrypted content here.
+  const { content } = report;
+  const decryptedContent = content;
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4">
       <button
-        onClick={() => navigate("/admin/reports")}
+        onClick={() => navigate("/admin/view")}
         className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4"
       >
         Back to Reports

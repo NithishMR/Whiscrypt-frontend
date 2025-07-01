@@ -1,52 +1,37 @@
-import { useState } from "react";
-import { Toaster, toast } from "sonner";
 import axios from "axios";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router";
-
-// Success Toast
-// const SuccessToast = () => {
-//   const promise = new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve({ status: "Login Successful!" });
-//     }, 2000);
-//   });
-
-//   toast.promise(promise, {
-//     loading: "Authenticating...",
-//     success: (data) => data.status,
-//     error: "Error on our side. But login successful!",
-//   });
-// };
-
-// Failure Toast
-// const failureToast = () => {
-//   toast.error("Invalid credentials. Please try again.");
-// };
-
-export default function AdminSignIn() {
-  const [identifier, setIdentifier] = useState(""); // username or email
+import { Toaster, toast } from "sonner";
+import { setName, setToken } from "../Redux/adminSlice";
+export default function SignIn() {
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    // Use toast.promise to show toast during the request lifecycle
+  const handleSubmission = async (e) => {
+    e.preventDefault(); // Prevent form reload
+    console.log(userName);
+    console.log(password);
+    console.log(userEmail);
     await toast.promise(
-      axios.post("/api/adminLogin", {
-        identifier: identifier,
+      axios.post("http://localhost:5000/api/admin/login", {
+        username: userName,
+        email: userEmail,
         password: password,
       }),
       {
-        loading: "Authenticating...",
-        success: () => {
-          // 👇 Navigate to admin panel on success
-          setTimeout(() => {
-            navigate("/admin/dashboard");
-          }, 2000); // short delay to allow toast to show
-          return "Login Successful! Wait while we redirect you";
+        loading: "Finding you safely...",
+        success: (res) => {
+          const token = res.data.token;
+          dispatch(setToken(token));
+          dispatch(setName(userName));
+          localStorage.setItem("admin_token", token);
+          setTimeout(() => navigate("/admin/view"), 500);
+          return "You have successfully logged in the account";
         },
-        error: "Invalid credentials or server error.",
+        error: "Sign-up failed. Please try again.",
       }
     );
   };
@@ -56,28 +41,44 @@ export default function AdminSignIn() {
       <Toaster richColors position="top-center" />
 
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        {/* <p className="text-center text-sm text-gray-500 mb-2">
+        <p className="text-center text-sm text-gray-500 mb-2">
           For Administrator
-        </p> */}
-        <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
+        </p>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Login to your account
+        </h1>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmission}>
           <div>
             <label
               className="block text-sm font-medium mb-1"
-              htmlFor="identifier"
+              htmlFor="username"
             >
-              Username or Email
+              Username
             </label>
             <input
-              id="identifier"
+              id="username"
               type="text"
-              placeholder="Enter username or email"
+              placeholder="Enter username"
               autoComplete="off"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter email"
+              autoComplete="off"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -96,7 +97,6 @@ export default function AdminSignIn() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
             />
           </div>
 
@@ -104,12 +104,12 @@ export default function AdminSignIn() {
             type="submit"
             className="w-full bg-purple-700 text-white py-2 rounded-lg font-semibold hover:bg-purple-800 transition"
           >
-            Log In
+            Sign In
           </button>
         </form>
 
         <div className="text-center text-sm text-gray-600 mt-4">
-          Don't have an admin account?{" "}
+          Create an account?{" "}
           <Link
             to="/admin/signup"
             className="text-purple-700 font-medium hover:underline"

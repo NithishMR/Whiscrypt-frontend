@@ -12,6 +12,7 @@ function generateRandomUsername() {
 
 export default function UserSignUp() {
   const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmission = async (e) => {
@@ -20,8 +21,9 @@ export default function UserSignUp() {
     const finalUsername = userName.trim() || generateRandomUsername();
 
     await toast.promise(
-      axios.post("/api/userSignUp", {
+      axios.post("http://localhost:5000/api/auth/register", {
         username: finalUsername,
+        email,
         password,
       }),
       {
@@ -81,7 +83,21 @@ export default function UserSignUp() {
               required
             />
           </div>
-
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter email"
+              autoComplete="on"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
           <button
             type="submit"
             className="w-full bg-blue-700 text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition"

@@ -2,17 +2,21 @@ import { useState } from "react";
 import { Toaster, toast } from "sonner";
 import axios from "axios";
 import { Link, useNavigate } from "react-router";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setName, setToken } from "../Redux/userSlice";
 export default function UserSignIn() {
-  const [identifier, setIdentifier] = useState(""); // username or email
+  const [email, setEmail] = useState(""); // username or email
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogin = async (e) => {
     e.preventDefault();
 
     await toast.promise(
-      axios.post("/api/userLogin", {
-        identifier,
+      axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        username,
         password,
       }),
       {
@@ -20,8 +24,11 @@ export default function UserSignIn() {
         success: (res) => {
           // store JWT here if needed
           const token = res.data.token;
+
+          dispatch(setToken(token));
+          dispatch(setName(username));
           localStorage.setItem("user_token", token);
-          setTimeout(() => navigate("/user/dashboard"), 500);
+          setTimeout(() => navigate("/user/report"), 500);
           return "Login successful!";
         },
         error: "Invalid credentials. Please try again.",
@@ -43,24 +50,38 @@ export default function UserSignIn() {
 
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              htmlFor="identifier"
-            >
-              Username or Email
+            <label className="block text-sm font-medium mb-1" htmlFor="email">
+              Email
             </label>
             <input
-              id="identifier"
-              type="text"
-              placeholder="Enter your username or email"
-              autoComplete="off"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              id="email"
+              type="email"
+              placeholder="Enter email"
+              autoComplete="on"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-
+          <div>
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="username"
+            >
+              username
+            </label>
+            <input
+              id="username"
+              type="usernmame"
+              placeholder="Enter username"
+              autoComplete="on"
+              value={username}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
           <div>
             <label
               className="block text-sm font-medium mb-1"

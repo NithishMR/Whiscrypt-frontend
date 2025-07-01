@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatBot from "../Chatbot/Chatbot";
+import { useDispatch, useSelector } from "react-redux";
+import { setToken } from "../Redux/userSlice";
 
 const ReportForm = () => {
   const [title, setTitle] = useState("");
@@ -7,6 +9,20 @@ const ReportForm = () => {
   const [category, setCategory] = useState("General");
   const [attachments, setAttachments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useDispatch();
+
+  // Hydrate Redux from localStorage after refresh
+  useEffect(() => {
+    const token = localStorage.getItem("user_token");
+    if (token) {
+      dispatch(setToken(token));
+    }
+  }, [dispatch]);
+
+  // Get token from Redux or fallback to localStorage
+  const redux_token = useSelector((state) => state.user.userdetails.user_token);
+  const user_token = redux_token || localStorage.getItem("user_token");
 
   const handleAttachmentChange = (e) => {
     setAttachments(Array.from(e.target.files));
@@ -16,19 +32,18 @@ const ReportForm = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("category", category);
-
-    attachments.forEach((file) => {
-      formData.append("attachments", file);
-    });
-
     try {
-      const res = await fetch("/api/reports", {
+      const res = await fetch("http://localhost:5000/api/reports/submit", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user_token}`,
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          category,
+        }),
       });
 
       if (!res.ok) throw new Error("Failed to submit report");
@@ -37,7 +52,6 @@ const ReportForm = () => {
       setTitle("");
       setContent("");
       setCategory("General");
-      setAttachments([]);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -84,22 +98,16 @@ const ReportForm = () => {
           ></textarea>
         </div>
 
-        <div>
-          <label
-            htmlFor="attachments"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Attachments (Optional)
-          </label>
+        {/* Uncomment when attachments are handled in backend */}
+        {/* <div>
+          <label className="block text-sm font-medium">Attachments (Optional)</label>
           <input
             type="file"
-            id="attachments"
-            name="attachments"
             multiple
             onChange={handleAttachmentChange}
             className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
           />
-        </div>
+        </div> */}
 
         <button
           type="submit"
@@ -109,7 +117,8 @@ const ReportForm = () => {
           {submitting ? "Submitting..." : "Submit Report"}
         </button>
       </form>
-      {/* catbot */}
+
+      {/* Chatbot */}
       <ChatBot />
     </div>
   );
