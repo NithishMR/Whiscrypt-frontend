@@ -7,23 +7,46 @@ import UserSignIn from "./Users/UserSignIn";
 import ReportForm from "./Report/ReportForm";
 import AdminReportsTable from "./AdminReport/AdminReportsTable";
 import DetailedReport from "./AdminReport/DetailedReport";
+import ProtectedRoute from "./Route-Guarding/ProtectedRoute";
+import Unauthorized from "./Unauthorized/Unauthorized";
 
 function App() {
   return (
-    <>
-      <div className="">
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/admin/signup" element={<AdminSignUp />} />
-          <Route path="/admin/signin" element={<AdminSignIn />} />
-          <Route path="/user/signup" element={<UserSignUp />} />
-          <Route path="/user/signin" element={<UserSignIn />} />
-          <Route path="/user/report" element={<ReportForm />} />
-          <Route path="/admin/view" element={<AdminReportsTable />} />
-          <Route path="/admin/reports/:id" element={<DetailedReport />} />
-        </Routes>
-      </div>
-    </>
+    <div>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/admin/signup" element={<AdminSignUp />} />
+        <Route path="/admin/signin" element={<AdminSignIn />} />
+        <Route path="/user/signup" element={<UserSignUp />} />
+        <Route path="/user/signin" element={<UserSignIn />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route
+          path="/user/report"
+          element={
+            <ProtectedRoute role="user">
+              <ReportForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/view"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminReportsTable />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reports/:id"
+          element={
+            <ProtectedRoute role="admin">
+              <DetailedReport />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </div>
   );
 }
 

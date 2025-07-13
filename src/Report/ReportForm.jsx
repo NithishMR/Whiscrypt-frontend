@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ChatBot from "../Chatbot/Chatbot";
 import { useDispatch, useSelector } from "react-redux";
-import { setToken } from "../Redux/userSlice";
+import { setUserToken } from "../Redux/userSlice";
 
 const ReportForm = () => {
   const [title, setTitle] = useState("");
@@ -16,7 +16,7 @@ const ReportForm = () => {
   useEffect(() => {
     const token = localStorage.getItem("user_token");
     if (token) {
-      dispatch(setToken(token));
+      dispatch(setUserToken(token));
     }
   }, [dispatch]);
 

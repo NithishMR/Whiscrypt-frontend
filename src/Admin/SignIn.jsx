@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { Toaster, toast } from "sonner";
-import { setName, setToken } from "../Redux/adminSlice";
+import { setAdminName, setAdminToken } from "../Redux/adminSlice";
 export default function SignIn() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +25,8 @@ export default function SignIn() {
         loading: "Finding you safely...",
         success: (res) => {
           const token = res.data.token;
-          dispatch(setToken(token));
-          dispatch(setName(userName));
+          dispatch(setAdminToken(token));
+          dispatch(setAdminName(userName));
           localStorage.setItem("admin_token", token);
           setTimeout(() => navigate("/admin/view"), 500);
           return "You have successfully logged in the account";

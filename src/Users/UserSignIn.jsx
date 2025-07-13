@@ -3,7 +3,7 @@ import { Toaster, toast } from "sonner";
 import axios from "axios";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { setName, setToken } from "../Redux/userSlice";
+import { setUserName, setUserToken } from "../Redux/userSlice";
 export default function UserSignIn() {
   const [email, setEmail] = useState(""); // username or email
   const [username, setUserName] = useState("");
@@ -25,8 +25,8 @@ export default function UserSignIn() {
           // store JWT here if needed
           const token = res.data.token;
 
-          dispatch(setToken(token));
-          dispatch(setName(username));
+          dispatch(setUserToken(token));
+          dispatch(setUserName(username));
           localStorage.setItem("user_token", token);
           setTimeout(() => navigate("/user/report"), 500);
           return "Login successful!";

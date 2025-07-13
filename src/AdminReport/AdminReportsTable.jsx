@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 let currentReports = [
   {
@@ -40,6 +42,10 @@ let currentReports = [
 ];
 
 const AdminReportsTable = () => {
+  const token =
+    useSelector((state) => state.admin?.admindetails?.admin_token) ||
+    localStorage.getItem("admin_token");
+
   const [reports, setReports] = useState(currentReports); // Initially using dummy data
   const [currentPage, setCurrentPage] = useState(1);
   const [reportsPerPage] = useState(10);
@@ -47,12 +53,20 @@ const AdminReportsTable = () => {
 
   useEffect(() => {
     const fetchReports = async () => {
+      // console.log("token", token);
       try {
-        const res = await fetch("http://localhost:5000/api/admin/reports");
-        const data = await res.json();
-        setReports(data); // You would replace the dummy data here
+        const res = await axios.get("http://localhost:5000/api/admin/reports", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token
+          },
+        });
+
+        setReports(res.data); // Axios auto-parses JSON
       } catch (err) {
-        console.error("Error fetching reports:", err);
+        console.error(
+          "Error fetching reports:",
+          err.response?.data || err.message
+        );
       }
     };
 

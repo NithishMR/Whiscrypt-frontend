@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const adminSlice = createSlice({
-  name: "slice for admin",
-  initialState: { admindetails: {} },
+  name: "admin",
+  initialState: { admindetails: { role: "admin" } },
   reducers: {
-    setName: (state, action) => {
+    setAdminName: (state, action) => {
       state.admindetails.username = action.payload;
     },
-    setToken: (state, action) => {
+    setAdminToken: (state, action) => {
       state.admindetails.admin_token = action.payload;
     },
   },
 });
-export const { setName, setToken } = adminSlice.actions;
+export const { setAdminName, setAdminToken } = adminSlice.actions;
 export default adminSlice.reducer;

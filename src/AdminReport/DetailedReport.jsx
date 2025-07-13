@@ -1,28 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { useSelector } from "react-redux";
 const DetailedReport = () => {
+  const token =
+    useSelector((state) => state.admin?.admindetails?.admin_token) ||
+    localStorage.getItem("admin_token");
   const { id } = useParams(); // Get the report ID from the URL
   const [report, setReport] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchReport = async () => {
+    const fetchReports = async () => {
+      // console.log("token", token);
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/admin/reports/${id}`
+        const res = await axios.get(
+          `http://localhost:5000/api/admin/reports/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Attach token
+            },
+          }
         );
-        const data = await res.json();
-        setReport(data);
-        setIsLoading(false);
+        console.log(res);
+        setReport(res.data); // Axios auto-parses JSON
       } catch (err) {
-        console.error("Error fetching report:", err);
+        console.error(
+          "Error fetching reports:",
+          err.response?.data || err.message
+        );
+      } finally {
+        setIsLoading(false); // ✅ Always stop loading — whether success or error
       }
     };
 
-    fetchReport();
-  }, [id]);
+    fetchReports();
+  }, [id, token]);
 
   if (isLoading) {
     return <div>Loading...</div>;
